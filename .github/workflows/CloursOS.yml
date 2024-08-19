@@ -28,6 +28,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y openjdk-11-jdk wget git
+        curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo
+        chmod a+x /usr/local/bin/repo
 
     - name: Clone AOSP
       run: |
