@@ -1,0 +1,53 @@
+name: CloursOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+      ANDROID_HOME: ${{ github.workspace }}/android-sdk
+
+    steps:
+    - name: Set up Git
+      run: |
+        git config --global user.name "Your Name"
+        git config --global user.email "youremail@example.com"
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-11-jdk wget git
+
+    - name: Set up Android SDK
+      run: |
+        mkdir -p $ANDROID_HOME
+        cd $ANDROID_HOME
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+        unzip commandlinetools-linux-8092744_latest.zip
+        yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
+        sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "build-tools;31.0.0"
+
+    - name: Clone AOSP
+      run: |
+        mkdir -p $GITHUB_WORKSPACE/cloursos
+        cd $GITHUB_WORKSPACE/cloursos
+        git clone https://android.googlesource.com/platform/manifest -b android-13.0.0_r3
+        repo init -u https://android.googlesource.com/platform/manifest -b android-13.0.0_r3
+        repo sync -j8
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: CloursOS-File
+        path: ./
