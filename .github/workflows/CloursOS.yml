@@ -29,15 +29,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y openjdk-11-jdk wget git
 
-    - name: Set up Android SDK
-      run: |
-        mkdir -p $ANDROID_HOME
-        cd $ANDROID_HOME
-        wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
-        unzip commandlinetools-linux-8092744_latest.zip
-        yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
-        sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "build-tools;31.0.0"
-
     - name: Clone AOSP
       run: |
         mkdir -p $GITHUB_WORKSPACE/cloursos
